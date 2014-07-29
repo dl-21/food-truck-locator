@@ -26,10 +26,10 @@
       <div id="retrieve">
         <h3>Retrieve Data</h3>
         <ul>
-          <li>Data can be requested at <a href="{{api_url}}">{{api_url}}</a> via a GET request.</li>
-            <ul><li>e.g. <a href="{{api_url}}?location=37.7904067199,-122.3992758861&max_dist=4.1">{{api_url}}?location=37.7904067199,-122.3992758861&max_dist=4.1</a></li></ul>
+          <li>API entry point: <a href="{{api_url}}">{{api_url}}</a></li>
+            <ul><li>Example GET request: <a href="{{api_url}}?location=37.7904067199,-122.3992758861&max_dist=4.1">{{api_url}}?location=37.7904067199,-122.3992758861&max_dist=4.1</a></li></ul>
           <li>The API returns a JSON response.</li>
-        <li>Curl Example
+        <li>Curl example
           <pre>
 $ curl -i "{{api_url}}?location=37.7901490737,-122.3986581846&max_dist=0.2&limit=2&offset=0"
 HTTP/1.0 200 OK
