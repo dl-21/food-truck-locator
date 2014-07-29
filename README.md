@@ -32,8 +32,8 @@ Also at http://dl-food-truck-locator.herokuapp.com/
 * By default, the API returns a list of food trucks sorted by proximity (nearest trucks first).
 * However, a maximum distance can be specified to filter results based on distance from the search location.
 
-### Retrieve Data
-* Data can be retrieved from http://dl-food-truck-locator.herokuapp.com/food_trucks_api via a GET request.
+### Data Retrieval
+* API entry point: http://dl-food-truck-locator.herokuapp.com/food_trucks_api (method: GET)
   * e.g. http://dl-food-truck-locator.herokuapp.com/food_trucks_api?location=37.7904067199,-122.3992758861&max_dist=4.1
 * The API returns a JSON response.
 * Curl response
