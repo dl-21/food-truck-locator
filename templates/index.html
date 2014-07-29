@@ -29,9 +29,8 @@
           <li>Data can be requested at <a href="{{api_url}}">{{api_url}}</a> via a GET request.</li>
             <ul><li>e.g. <a href="{{api_url}}?location=37.7904067199,-122.3992758861&max_dist=4.1">{{api_url}}?location=37.7904067199,-122.3992758861&max_dist=4.1</a></li></ul>
           <li>The API returns a JSON response.</li>
-        </ul>
-        <h5>Curl Example</h5>
-        <pre>
+        <li>Curl Example
+          <pre>
 $ curl -i "{{api_url}}?location=37.7901490737,-122.3986581846&max_dist=0.2&limit=2&offset=0"
 HTTP/1.0 200 OK
 Content-Type: application/json
@@ -64,8 +63,9 @@ Date: Tue, 29 Jul 2014 01:18:17 GMT
   "num_results": 2, 
   "total_results_found": 39
 }
-       </pre> 
-
+          </pre>
+        </li> 
+      </ul>
       </div>
       <br/>
       <div id="request_params">
