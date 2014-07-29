@@ -21,7 +21,7 @@ class FoodTruckLocatorTestCase(unittest.TestCase):
 
     def test_good_location(self):
         """Verify that a valid location yields results"""
-        rv = self.app.get('/api/food_trucks?location=37.7901490737,-122.3986581846')
+        rv = self.app.get('/food_trucks_api?location=37.7901490737,-122.3986581846')
         self.assertEqual(rv.status_code, 200)
         data = json.loads(rv.data)
         # We have results!
@@ -29,7 +29,7 @@ class FoodTruckLocatorTestCase(unittest.TestCase):
 
     def test_missing_location(self):
         """Verify that we receive an error if no search location is given"""
-        rv = self.app.get('/api/food_trucks')
+        rv = self.app.get('/food_trucks_api')
         self.assertEqual(rv.status_code, 400)
         # Check error message
         data = json.loads(rv.data)
@@ -39,7 +39,7 @@ class FoodTruckLocatorTestCase(unittest.TestCase):
     def test_invalid_location(self):
         """Verify that we receive an error if the search location is invalid"""
         # Test with non-latitude/longitude input 
-        rv = self.app.get('/api/food_trucks?location=kljsfsfj')
+        rv = self.app.get('/food_trucks_api?location=kljsfsfj')
         self.assertEqual(rv.status_code, 400)
         # Check error message
         data = json.loads(rv.data)
@@ -47,7 +47,7 @@ class FoodTruckLocatorTestCase(unittest.TestCase):
         self.assertEquals(data['error'].get('type'), 'Invalid location')
 
         # Test with only latitude
-        rv = self.app.get('/api/food_trucks?location=39.001')
+        rv = self.app.get('/food_trucks_api?location=39.001')
         self.assertEqual(rv.status_code, 400)
         # Check error message
         data = json.loads(rv.data)
@@ -58,14 +58,14 @@ class FoodTruckLocatorTestCase(unittest.TestCase):
         """Verify that the limit parameter is restricting the number of results returned"""
         # Verify that default number of items returned if limit parameter isn't provided
         default = food_truck_locator.app.config['DEFAULT_LIMIT']
-        rv = self.app.get('/api/food_trucks?location=37.7901490737,-122.3986581846')
+        rv = self.app.get('/food_trucks_api?location=37.7901490737,-122.3986581846')
         self.assertEqual(rv.status_code, 200)
         data = json.loads(rv.data)
         self.assertEquals(data['num_results'], default)
 
         # Check valid user-specified limit
         limit = 25
-        rv = self.app.get('/api/food_trucks?location=37.7901490737,-122.3986581846&limit=%d' % limit)
+        rv = self.app.get('/food_trucks_api?location=37.7901490737,-122.3986581846&limit=%d' % limit)
         self.assertEqual(rv.status_code, 200)
         data = json.loads(rv.data)
         self.assertEquals(data['num_results'], limit)
@@ -75,13 +75,13 @@ class FoodTruckLocatorTestCase(unittest.TestCase):
         default = food_truck_locator.app.config['DEFAULT_LIMIT']
 
         # Negative value 
-        rv = self.app.get('/api/food_trucks?location=37.7901490737,-122.3986581846&limit=-20')
+        rv = self.app.get('/food_trucks_api?location=37.7901490737,-122.3986581846&limit=-20')
         self.assertEqual(rv.status_code, 200)
         data = json.loads(rv.data)
         self.assertEquals(data['num_results'], default)
 
         # Non-numeric value
-        rv = self.app.get('/api/food_trucks?location=37.7901490737,-122.3986581846&limit=ksdfjslf')
+        rv = self.app.get('/food_trucks_api?location=37.7901490737,-122.3986581846&limit=ksdfjslf')
         self.assertEqual(rv.status_code, 200)
         data = json.loads(rv.data)
         self.assertEquals(data['num_results'], default)
@@ -89,7 +89,7 @@ class FoodTruckLocatorTestCase(unittest.TestCase):
     def test_max_dist(self):
         """Verify that the max_dist parameter is properly filtering the results"""
         max_dist = 0.1
-        rv = self.app.get('/api/food_trucks?location=37.7901490737,-122.3986581846&max_dist=%.10g' % max_dist)
+        rv = self.app.get('/food_trucks_api?location=37.7901490737,-122.3986581846&max_dist=%.10g' % max_dist)
         self.assertEqual(rv.status_code, 200)
         data = json.loads(rv.data)
         # Verify each result has a distance within our max_dist value
@@ -99,13 +99,13 @@ class FoodTruckLocatorTestCase(unittest.TestCase):
     def test_bad_max_dist(self):
         """Verify that a bad max_dist value doesn't cause a request to fail"""
         # Negative value
-        rv = self.app.get('/api/food_trucks?location=37.7901490737,-122.3986581846&max_dist=-0.001')
+        rv = self.app.get('/food_trucks_api?location=37.7901490737,-122.3986581846&max_dist=-0.001')
         self.assertEqual(rv.status_code, 200)
         data = json.loads(rv.data)
         self.assertTrue(data['num_results'] > 0)
 
         # Non-numeric value
-        rv = self.app.get('/api/food_trucks?location=37.7901490737,-122.3986581846&max_dist=ksfjsflj')
+        rv = self.app.get('/food_trucks_api?location=37.7901490737,-122.3986581846&max_dist=ksfjsflj')
         self.assertEqual(rv.status_code, 200)
         data = json.loads(rv.data)
         self.assertTrue(data['num_results'] > 0)
@@ -115,12 +115,12 @@ class FoodTruckLocatorTestCase(unittest.TestCase):
            e.g. for pagination
         """
         # Get the first 10 results (offset=0 by default)
-        rv = self.app.get('/api/food_trucks?location=37.7905483182,-122.4003336737&limit=10')
+        rv = self.app.get('/food_trucks_api?location=37.7905483182,-122.4003336737&limit=10')
         data = json.loads(rv.data)
         first_set_ids = {item.get('id') for item in data.get('items', [])}
 
         # Get next 10 results
-        rv = self.app.get('/api/food_trucks?location=37.7905483182,-122.4003336737&limit=10&offset=10')
+        rv = self.app.get('/food_trucks_api?location=37.7905483182,-122.4003336737&limit=10&offset=10')
         data = json.loads(rv.data)
         second_set_ids = {item.get('id') for item in data.get('items', [])}
 
@@ -131,20 +131,20 @@ class FoodTruckLocatorTestCase(unittest.TestCase):
     def test_bad_offset(self):
         """Verify that a bad offset value doesn't cause a request to fail"""
         # Negative value
-        rv = self.app.get('/api/food_trucks?location=37.7901490737,-122.3986581846&offset=-100')
+        rv = self.app.get('/food_trucks_api?location=37.7901490737,-122.3986581846&offset=-100')
         self.assertEqual(rv.status_code, 200)
         data = json.loads(rv.data)
         self.assertTrue(data['num_results'] > 0)
 
         # Non-numeric value
-        rv = self.app.get('/api/food_trucks?location=37.7901490737,-122.3986581846&offset=A B C')
+        rv = self.app.get('/food_trucks_api?location=37.7901490737,-122.3986581846&offset=A B C')
         self.assertEqual(rv.status_code, 200)
         data = json.loads(rv.data)
         self.assertTrue(data['num_results'] > 0)
 
     def test_all_params(self):
         """Test a request using all available input params"""
-        rv = self.app.get('/api/food_trucks?location=37.7901490737,-122.3986581846&max_dist=1.00&limit=10&offset=20')
+        rv = self.app.get('/food_trucks_api?location=37.7901490737,-122.3986581846&max_dist=1.00&limit=10&offset=20')
         self.assertEqual(rv.status_code, 200)
         data = json.loads(rv.data)
         self.assertTrue(data['num_results'] > 0)
