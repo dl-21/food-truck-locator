@@ -1,28 +1,27 @@
 """
 Food Truck Locator API
+  Given a location, return nearby food trucks
 
 """
 
 import operator
-
-from flask import Flask, jsonify, g, request, abort, make_response, url_for, render_template
+from flask import Flask, jsonify, g, request, abort, make_response, render_template
 import sqlite3
 from geopy.point import Point
 from geopy.distance import distance
-
 
 app = Flask(__name__)
 
 # Config
 app.config.update(
-    DEBUG = True,
-    DATABASE = 'food_trucks.db',
-    DEFAULT_LIMIT = 10,
+    DEBUG=False,
+    DATABASE='food_trucks.db',
+    DEFAULT_LIMIT=10,
 )
 
 ## Database functions
 def get_db():
-    """ Return an existing db connection or set up a new one if one doesn't exist
+    """ Return existing db connection or set up a new one if one doesn't exist
         http://flask.pocoo.org/docs/patterns/sqlite3/
     """
     if not hasattr(g, 'db_conn'):
@@ -50,10 +49,12 @@ def close_db(exception):
 ## Request-handling functions
 @app.route('/')
 def index():
-    return render_template('index.html') 
+    """API documentation"""
+    return render_template('index.html')
 
 @app.route('/food_trucks_api', methods=['GET'])
 def get_items():
+    """API entry point"""
     # Retrieve request parameters
     # Location to search around (latitude/longitude pair expected)
     location = request.args.get('location')
@@ -78,6 +79,7 @@ def get_items():
     if max_dist is not None:
         try:
             max_dist = float(max_dist)
+            # If max_dist is negative, don't filter results by distance
             if max_dist < 0:
                 max_dist = None
         except ValueError:
@@ -114,12 +116,11 @@ def get_items():
 
     return jsonify(response)
 
-
 def retrieve_matching_trucks(location, max_dist, offset, limit):
     """Retrieve and filter results based on request criteria
        Input:
            location: Point object with latitude/longitude of the search location
-           max_dist: Only return results with a certain distance of the search location
+           max_dist: Only return results within a certain distance
            offset: Index of the first result to return
            limit: Maximum number of results to return
     """
@@ -131,7 +132,10 @@ def retrieve_matching_trucks(location, max_dist, offset, limit):
     # For trucks without coordinates, set the distance to an empty string
     for truck in trucks:
         if truck['latitude'] and truck['longitude']:
-            truck['distance'] = distance(location, Point(truck['latitude'], truck['longitude'])).miles
+            try:
+                truck['distance'] = distance(location, Point(truck['latitude'], truck['longitude'])).miles
+            except Exception:
+                truck['distance'] = ""
         else:
             truck['distance'] = ""
 

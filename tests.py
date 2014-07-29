@@ -4,7 +4,6 @@ Unit tests for the Food Truck Locator API
 
 import unittest
 import json
-import sqlite3
 import food_truck_locator
 
 class FoodTruckLocatorTestCase(unittest.TestCase):
@@ -46,7 +45,7 @@ class FoodTruckLocatorTestCase(unittest.TestCase):
         self.assertIsNotNone(data.get('error'))
         self.assertEquals(data['error'].get('type'), 'Invalid location')
 
-        # Test with only latitude
+        # Test with only one coordinate
         rv = self.app.get('/food_trucks_api?location=39.001')
         self.assertEqual(rv.status_code, 400)
         # Check error message
