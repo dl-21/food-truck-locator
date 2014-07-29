@@ -1,0 +1,159 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <!-- Define variable to store API url -->
+    {% set api_url = url_for('get_items', _external=True)%}
+
+    <title>Food Truck Locator API</title>
+  </head>
+  <body>
+    <div id="main" class="container">
+      <div class="page-header">
+        <h1>Food Truck Locator API</h1>
+      </div>
+      <div id="description">
+        <h3>Overview</h3>
+         <ul>
+           <li>The Food Truck Locator API computes the distance of food trucks from an initial search location (provided by the user).</li>
+           <li>By default, the API returns a list of food trucks sorted by proximity (nearest trucks first).</li> 
+           <li>However, a maximum distance can be specified to filter results based on distance from the search location.</li>
+           <li>Food truck data is provided by <a href="https://data.sfgov.org/Permitting/Mobile-Food-Facility-Permit/rqzj-sfat">San Francisco Data</a></li>
+        </ul>
+      </div>
+      <br/>
+      <div id="retrieve">
+        <h3>Retrieve Data</h3>
+        <ul>
+          <li>Data can be requested at <a href="{{api_url}}">{{api_url}}</a> via a GET request.</li>
+            <ul><li>e.g. <a href="{{api_url}}?location=37.7904067199,-122.3992758861&max_dist=4.1">{{api_url}}?location=37.7904067199,-122.3992758861&max_dist=4.1</a></li></ul>
+          <li>The API returns a JSON response.</li>
+        </ul>
+        <h5>Curl Example</h5>
+        <pre>
+$ curl -i "{{api_url}}?location=37.7901490737,-122.3986581846&max_dist=0.2&limit=2&offset=0"
+HTTP/1.0 200 OK
+Content-Type: application/json
+Content-Length: 601
+Server: Werkzeug/0.9.6 Python/2.7.5
+Date: Tue, 29 Jul 2014 01:18:17 GMT
+
+{
+  "items": [
+    {
+      "address": "50 01ST ST", 
+      "distance": 0.0, 
+      "food_items": "Cupcakes", 
+      "id": 1, 
+      "latitude": 37.7901490737, 
+      "longitude": -122.3986581846, 
+      "vendor": "Cupkates Bakery, LLC"
+    }, 
+    {
+      "address": "525 MARKET ST", 
+      "distance": 0.03819310144774475, 
+      "food_items": "Hot Indian Chai", 
+      "id": 421, 
+      "latitude": 37.7904067199, 
+      "longitude": -122.3992758861, 
+      "vendor": "The Chai Cart"
+    }
+  ], 
+  "location_query": "37.7901490737,-122.398658185", 
+  "num_results": 2, 
+  "total_results_found": 39
+}
+       </pre> 
+
+      </div>
+      <br/>
+      <div id="request_params">
+        <h3>Request Parameters</h3>
+        <table id="table_params" class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Required</th>
+              <th>Default</th>
+              <th>Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>location</td>
+              <td>Latitude, longitude of the search location</td>
+              <td>Required</td>
+              <td>N/A</td>
+              <td><em>location=37.7892489084,-122.3988929593</em></td>
+            </tr>
+            <tr>
+              <td>max_dist</td>
+              <td>Only return results that are located within max_dist of the search location (distance is specified in miles)</td>
+              <td>Optional</td>
+              <td>If not provided, all results are returned</td>
+              <td><em>max_dist=0.2</em></td>
+            </tr>
+            <tr>
+              <td>offset</td>
+              <td>Index of first result</td>
+              <td>Optional</td>
+              <td>0</td>
+              <td><em>offset=10</em></td>
+            </tr>
+            <tr>
+              <td>limit</td>
+              <td>Maximum number of results to return</td>
+              <td>Optional</td>
+              <td>10</td>
+              <td><em>limit=100</em></td>
+            </tr>
+          </tbody>
+        </table> 
+      </div>
+      <br/>
+      <div id="response_params">
+        <h3>Response Parameters</h3>
+        <table id="table_params" class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>location_query</td>
+              <td>Latitude, longitude of the user-specified search location</td>
+            </tr>
+            <tr>
+              <td>num_results</td>
+              <td>Number of results in the response</td>
+            </tr>
+            <tr>
+              <td>total_results_found</td>
+              <td>Total number of results matching search criteria</td>
+            </tr>
+            <tr>
+              <td>items</td>
+              <td>List of results</td>
+            </tr>
+            <tr>
+              <td>error</td>
+              <td>Errors encountered while processing the request</td>
+            </tr>
+          </tbody>
+        </table>
+      <br/>
+      <div id="misc">
+        <h3>Miscellaneous</h3>
+        <ul>
+          <li>GitHub repo: <a href="https://github.com/dl-21/food-truck-locator">https://github.com/dl-21/food-truck-locator</a></li>
+          <li>Email: <a href="mailto:dorislaisf@gmail.com">dorislaisf@gmail.com</li>
+        </ul>
+        <br/>
+      </div>
+    </div>
+  </body>
+</html>

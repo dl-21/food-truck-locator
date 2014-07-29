@@ -5,7 +5,7 @@ Food Truck Locator API
 
 import operator
 
-from flask import Flask, jsonify, g, request, abort, make_response
+from flask import Flask, jsonify, g, request, abort, make_response, url_for, render_template
 import sqlite3
 from geopy.point import Point
 from geopy.distance import distance
@@ -50,9 +50,9 @@ def close_db(exception):
 ## Request-handling functions
 @app.route('/')
 def index():
-    return 'hey!'
+    return render_template('index.html') 
 
-@app.route('/api/food_trucks', methods=['GET'])
+@app.route('/food_trucks_api', methods=['GET'])
 def get_items():
     # Retrieve request parameters
     # Location to search around (latitude/longitude pair expected)
@@ -103,10 +103,11 @@ def get_items():
         offset = 0
 
     # Get trucks
-    trucks = retrieve_matching_trucks(coords, max_dist, offset, limit)
+    trucks, total_results_found = retrieve_matching_trucks(coords, max_dist, offset, limit)
 
     # Prepare the response
     response = {'num_results': len(trucks),
+                'total_results_found': total_results_found,
                 'location_query' : "{},{}".format(*coords),
                 'items': trucks,
                }
@@ -142,10 +143,13 @@ def retrieve_matching_trucks(location, max_dist, offset, limit):
     # Sort by nearest
     trucks = sorted(trucks, key=operator.itemgetter('distance'))
 
+    # Keep track of the total number of results found
+    total_results_found = len(trucks)
+
     # Offset and cap the results
     trucks = trucks[offset:offset+limit]
 
-    return trucks
+    return trucks, total_results_found
 
 
 if __name__ == '__main__':
