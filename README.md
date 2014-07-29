@@ -6,7 +6,7 @@ Food Truck Locator API
 * Technical track: Back-end
 
 ### Technologies Used
-* Python: I wrote the app in Python, which is my favorite language to code in. I'm been coding in Python for about 4 years (splitting my time with other languages).
+* Python: I wrote the app in Python, which is my favorite language to code in. I've been coding in Python for about 4 years (splitting my time with other languages).
 * Flask: I chose Flask for the web framework as it's lightweight and works well for a small project such as this. This was the first application I built using Flask (outside of the example application from the Flask tutorial).
 * SQLite: For the database engine, I chose SQLite since it's fast and easy to set up. The database requirements for this app are minimal (e.g. data set is small and all contained in one small table, only read access is required, low volume traffic) so the feature set provided by SQLite is ample (plus we get the benefit of simplicity). Also since SQLite databases are file-based, they are portable and easy to deploy (to Heroku, for instance). I've used SQLite a couple times in previous projects.
 * Heroku: I deployed my application to Heroku. I've never used Heroku before so I wanted to try it out.
@@ -14,7 +14,7 @@ Food Truck Locator API
 
 ### Trade-offs
 * The app currently computes the distance for every food truck in our database (before sorting and filtering the results). This isn't a big issue now since the data set is small (655 food trucks) but will become problematic as the data set grows. We can find ways to reduce the number of distance computations we perform.
-  * For example, if the user wants to get all food trucks within a 1 mile distance, instead of retrieving all food trucks from the database, calculating the distance for each, and filtering out trucks > 1 mile away, we can construct a bounding box around the search location (1 mile in each direction). We can determine the latitude and longitude ranges for this bounding box and only retrieve food trucks from the database that are located within this bounding box (these are the only food trucks that potentially fall within 1 mile of the search location). We then compute the distances for this smaller set, and sort and filter as we did before.
+  * For example, if the user wants to get all food trucks within a 1 mile distance, instead of retrieving all food trucks from the database, calculating the distance for each, and filtering out trucks > 1 mile away, we can construct a bounding box around the search location (1 mile in each direction). We can determine the latitude and longitude ranges for this bounding box and only retrieve food trucks from the database that are located within the box (these are the only food trucks that potentially fall within a 1 mile of the search location). We then compute the distances for this smaller set, and sort and filter as we did before.
 * If I had more time, I'd add more flexibilty to the location specification. The API only accepts latitude/longitude pairs, but it would be useful to also handle addresses, intersections, or even points of interest. 
 * It also would be handy to be able to filter the results on other criteria, e.g. food items offered, food truck name.
 
